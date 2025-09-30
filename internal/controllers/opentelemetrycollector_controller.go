@@ -313,6 +313,7 @@ func (r *OpenTelemetryCollectorReconciler) Reconcile(ctx context.Context, req ct
 		return ctrl.Result{}, err
 	}
 
+	log.Info("foobar OpenTelemetryCollector changed", "replicas", instance.Spec.Replicas)
 	err = reconcileDesiredObjects(ctx, r.Client, log, &instance, params.Scheme, desiredObjects, ownedObjects)
 	return collectorStatus.HandleReconcileStatus(ctx, log, params, instance, err)
 }
