@@ -323,6 +323,8 @@ func mutateDeployment(existing, desired *appsv1.Deployment) error {
 		}
 	}
 
+	fmt.Printf("name: %s\toldReplicas: %d\tnewReplicas: %d", existing.Spec.Template.Name, *existing.Spec.Replicas, *desired.Spec.Replicas)
+
 	existing.Spec.MinReadySeconds = desired.Spec.MinReadySeconds
 	existing.Spec.Paused = desired.Spec.Paused
 	existing.Spec.ProgressDeadlineSeconds = desired.Spec.ProgressDeadlineSeconds
