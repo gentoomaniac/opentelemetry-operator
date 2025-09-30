@@ -252,6 +252,8 @@ func (r *OpenTelemetryCollectorReconciler) Reconcile(ctx context.Context, req ct
 		return ctrl.Result{}, err
 	}
 
+	log.Info("foobar: reconciliating resource", "resource_name", instance.Name)
+
 	// We have a deletion, short circuit and let the deletion happen
 	if deletionTimestamp := instance.GetDeletionTimestamp(); deletionTimestamp != nil {
 		if controllerutil.ContainsFinalizer(&instance, collectorFinalizer) {
