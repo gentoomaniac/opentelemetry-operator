@@ -181,7 +181,7 @@ func reconcileDesiredObjects(ctx context.Context, kubeClient client.Client, logg
 		case *appsv1.Deployment:
 			dpl := existing.(*appsv1.Deployment)
 			wantDpl := desired.(*appsv1.Deployment)
-			l.V(1).Info(fmt.Sprintf("name: %s, depl: %d, wnt: %d", dpl.Name, dpl.Spec.Replicas, wantDpl.Spec.Replicas))
+			l.V(1).Info(fmt.Sprintf("name: %s, depl: %d, wnt: %d", dpl.Name, *dpl.Spec.Replicas, *wantDpl.Spec.Replicas))
 		}
 
 		l.V(1).Info(fmt.Sprintf("desired has been %s", op))
