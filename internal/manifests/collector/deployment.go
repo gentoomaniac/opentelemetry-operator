@@ -4,6 +4,8 @@
 package collector
 
 import (
+	"fmt"
+
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -27,6 +29,9 @@ func Deployment(params manifests.Params) (*appsv1.Deployment, error) {
 		return nil, err
 	}
 
+	replicas := manifestutils.GetInitialReplicas(params.OtelCol)
+	fmt.Printf("collector.Deployment() replicas: %d", replicas)
+
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        name,
@@ -35,7 +40,7 @@ func Deployment(params manifests.Params) (*appsv1.Deployment, error) {
 			Annotations: annotations,
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: manifestutils.GetInitialReplicas(params.OtelCol),
+			Replicas: replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: manifestutils.SelectorLabels(params.OtelCol.ObjectMeta, ComponentOpenTelemetryCollector),
 			},

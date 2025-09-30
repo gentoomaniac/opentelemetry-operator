@@ -6,6 +6,7 @@ package upgrade
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 
 	semver "github.com/Masterminds/semver/v3"
@@ -56,6 +57,8 @@ func (u VersionUpgrade) Upgrade(ctx context.Context, original v1beta1.OpenTeleme
 	}
 
 	itemLogger := u.Log.WithValues("name", original.Name, "namespace", original.Namespace)
+	itemLogger.Info(fmt.Sprintf("foobar: instance replicas: %d", *original.Spec.Replicas))
+
 	upgraded, err := u.ManagedInstance(ctx, original)
 	if err != nil {
 		const msg = "automated update not possible. Configuration must be corrected manually and CR instance must be re-created."
