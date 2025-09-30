@@ -163,6 +163,10 @@ func reconcileDesiredObjects(ctx context.Context, kubeClient client.Client, logg
 		crudErr := retry.RetryOnConflict(retry.DefaultRetry, func() error {
 			result, createOrUpdateErr := ctrl.CreateOrUpdate(ctx, kubeClient, existing, mutateFn)
 			op = result
+			switch existing.(type) {
+			case *appsv1.Deployment:
+				l.V(1).Info(fmt.Sprintf("reconcileDesiredObjects() - Deployment error: %v", createOrUpdateErr))
+			}
 			return createOrUpdateErr
 		})
 		if crudErr != nil && errors.As(crudErr, &manifests.ImmutableChangeErr) {
@@ -183,7 +187,7 @@ func reconcileDesiredObjects(ctx context.Context, kubeClient client.Client, logg
 			cr := owner.(*v1beta1.OpenTelemetryCollector)
 			dpl := existing.(*appsv1.Deployment)
 			wantDpl := desired.(*appsv1.Deployment)
-			l.V(1).Info(fmt.Sprintf("name: %s, collector: %d, depl: %d, wnt: %d", dpl.Name, *cr.Spec.Replicas, *dpl.Spec.Replicas, *wantDpl.Spec.Replicas))
+			l.V(1).Info(fmt.Sprintf("reconcileDesiredObjects() - name: %s, collector: %d, depl: %d, wnt: %d", dpl.Name, *cr.Spec.Replicas, *dpl.Spec.Replicas, *wantDpl.Spec.Replicas))
 		}
 
 		l.V(1).Info(fmt.Sprintf("desired has been %s", op))
