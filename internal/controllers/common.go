@@ -21,6 +21,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
+	"github.com/open-telemetry/opentelemetry-operator/apis/v1beta1"
 	"github.com/open-telemetry/opentelemetry-operator/internal/manifests"
 	"github.com/open-telemetry/opentelemetry-operator/internal/manifests/collector"
 	"github.com/open-telemetry/opentelemetry-operator/internal/manifests/opampbridge"
@@ -179,9 +180,10 @@ func reconcileDesiredObjects(ctx context.Context, kubeClient client.Client, logg
 
 		switch existing.(type) {
 		case *appsv1.Deployment:
+			cr := owner.(*v1beta1.OpenTelemetryCollector)
 			dpl := existing.(*appsv1.Deployment)
 			wantDpl := desired.(*appsv1.Deployment)
-			l.V(1).Info(fmt.Sprintf("name: %s, depl: %d, wnt: %d", dpl.Name, *dpl.Spec.Replicas, *wantDpl.Spec.Replicas))
+			l.V(1).Info(fmt.Sprintf("name: %s, collector: %d, depl: %d, wnt: %d", dpl.Name, *cr.Spec.Replicas, *dpl.Spec.Replicas, *wantDpl.Spec.Replicas))
 		}
 
 		l.V(1).Info(fmt.Sprintf("desired has been %s", op))
