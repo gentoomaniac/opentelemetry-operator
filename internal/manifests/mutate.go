@@ -314,6 +314,8 @@ func mutateDaemonset(existing, desired *appsv1.DaemonSet) error {
 }
 
 func mutateDeployment(existing, desired *appsv1.Deployment) error {
+	fmt.Printf("name: %s", existing.Spec.Template.Name)
+
 	if !existing.CreationTimestamp.IsZero() {
 		if !apiequality.Semantic.DeepEqual(desired.Spec.Selector, existing.Spec.Selector) {
 			return &ImmutableFieldChangeErr{Field: "Spec.Selector"}
@@ -322,8 +324,6 @@ func mutateDeployment(existing, desired *appsv1.Deployment) error {
 			return err
 		}
 	}
-
-	fmt.Printf("name: %s\toldReplicas: %d\tnewReplicas: %d", existing.Spec.Template.Name, *existing.Spec.Replicas, *desired.Spec.Replicas)
 
 	existing.Spec.MinReadySeconds = desired.Spec.MinReadySeconds
 	existing.Spec.Paused = desired.Spec.Paused

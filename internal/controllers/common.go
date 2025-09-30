@@ -9,6 +9,7 @@ import (
 	"fmt"
 
 	"github.com/go-logr/logr"
+	appsv1 "k8s.io/api/apps/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	apimeta "k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -174,6 +175,13 @@ func reconcileDesiredObjects(ctx context.Context, kubeClient client.Client, logg
 			l.Error(crudErr, "failed to configure desired")
 			errs = append(errs, crudErr)
 			continue
+		}
+
+		switch existing.(type) {
+		case *appsv1.Deployment:
+			dpl := existing.(*appsv1.Deployment)
+			wantDpl := desired.(*appsv1.Deployment)
+			l.V(1).Info(fmt.Sprintf("name: %s, depl: %d, wnt: %d", dpl.Name, dpl.Spec.Replicas, wantDpl.Spec.Replicas))
 		}
 
 		l.V(1).Info(fmt.Sprintf("desired has been %s", op))
