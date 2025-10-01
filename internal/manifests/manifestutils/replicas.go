@@ -9,7 +9,11 @@ import (
 
 func GetInitialReplicas(otelCol v1beta1.OpenTelemetryCollector) *int32 {
 	if otelCol.Spec.Autoscaler != nil && otelCol.Spec.Autoscaler.MinReplicas != nil {
+		if *otelCol.Spec.Replicas > *otelCol.Spec.Autoscaler.MinReplicas {
+			return otelCol.Spec.Replicas
+		}
 		return otelCol.Spec.Autoscaler.MinReplicas
 	}
+
 	return otelCol.Spec.Replicas
 }
